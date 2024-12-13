@@ -7,27 +7,39 @@ export interface ApiResponse<T> {
     data: T;
 }
 
-// Define headers as a Record type with string index signature
 export type HeadersConfig = {
     [key: string]: string;
 }
 
 export interface SwapQuoteParams {
-    chain: Chain;
-    fromToken: string;
-    toToken: string;
+    chainId: string;
+    fromTokenAddress: string;
+    toTokenAddress: string;
     amount: string;
+    slippage?: string;
 }
 
 export interface CrossChainQuoteParams {
-    fromChain: Chain;
-    toChain: Chain;
-    fromToken: string;
-    toToken: string;
+    fromChainId: string;
+    toChainId: string;
+    fromTokenAddress: string;
+    toTokenAddress: string;
     amount: string;
+    slippage?: string;
 }
 
 export interface BridgeParams {
-    fromChain: Chain;
-    toChain: Chain;
+    fromChainId: string;
+    toChainId: string;
 }
+
+// config.ts
+export const CONFIG = {
+    BASE_URL: 'https://www.okx.com',
+    API_VERSION: '/api/v5/dex',
+    CHAIN_IDS: {
+        evm: '1',
+        solana: '501',
+        sui: '784'
+    } as const
+};

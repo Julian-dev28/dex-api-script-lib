@@ -123,6 +123,24 @@ npm run cross-chain-quote:sui # Get cross-chain quotes
 npm run all:sui
 ```
 
+## CLI API Commands
+
+Run the following commands in your terminal to get swap quotes for EVM, Solana, and SUI chains:
+
+```bash
+# Get default quotes
+npm run cli -- quote evm
+npm run cli -- quote solana
+npm run cli -- quote sui
+
+# Custom amounts
+npm run cli -- quote evm -a 2000000000000000000
+npm run cli -- quote solana -a 20000000000
+
+# Custom token addresses
+npm run cli -- quote evm -f 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE -t 0xdAC17F958D2ee523a2206206994597C13D831ec7 -a 1000000000000000000
+```
+
 ## Directory Structure
 ```
 lib/

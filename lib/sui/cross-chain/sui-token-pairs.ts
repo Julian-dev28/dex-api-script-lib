@@ -8,7 +8,7 @@ async function main() {
         };
 
         const timestamp = new Date().toISOString();
-        const requestPath = "/api/v5/dex/cross-chain/supported/tokens";
+        const requestPath = "/api/v5/dex/cross-chain/supported/bridge-tokens-pairs";
         const queryString = "?" + new URLSearchParams(params).toString();
         const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 

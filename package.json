@@ -27,16 +27,20 @@
     "bridges:sui": "ts-node lib/sui/cross-chain/sui-bridges.ts",
     "cross-chain-quote:sui": "ts-node lib/sui/cross-chain/sui-cross-chain-quote.ts",
     "all:sui": "npm run quote:sui && npm run chain:sui && npm run tokens:sui && npm run liquidity:sui && npm run bridge-tokens:sui && npm run bridges:sui && npm run cross-chain-quote:sui",
-    "get-all" : "npm run all:solana && npm run all:evm && npm run all:sui"
+    "get-all": "npm run all:solana && npm run all:evm && npm run all:sui"
   },
   "dependencies": {
+    "commander": "^12.1.0",
     "crypto-js": "^4.2.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.1",
     "@types/node": "^20.10.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@types/node-fetch": "^2.6.9"
+
   }
 }

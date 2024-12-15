@@ -5,7 +5,7 @@ import { getHeaders } from '../../shared';
 async function main() {
     try {
         const params = {
-            chainId: '195' // Ton Chain ID
+            chainId: '195' // Tron Chain ID
         };
 
         const timestamp = new Date().toISOString();

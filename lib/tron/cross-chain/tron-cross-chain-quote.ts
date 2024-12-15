@@ -4,7 +4,7 @@ import { getHeaders } from '../../shared';
 async function main() {
     try {
         const params = {
-            fromChainId: '607', // Ton Chain ID
+            fromChainId: '195', // Tron Chain ID
             toChainId: '1',    // To Ethereum
             amount: '10000000000',
             fromTokenAddress: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c', // Wrapped SOL

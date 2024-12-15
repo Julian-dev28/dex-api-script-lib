@@ -3,7 +3,7 @@ import { getHeaders } from '../../shared';
 
 async function main() {
     try {
-        const chainId = '607'; // Ton Chain ID
+        const chainId = '195'; // Tron Chain ID
         const timestamp = new Date().toISOString();
         const requestPath = "/api/v5/dex/cross-chain/supported/bridges";
         const queryString = chainId ? `?chainId=${chainId}` : '';

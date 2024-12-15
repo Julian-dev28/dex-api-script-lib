@@ -4,7 +4,7 @@ import { getHeaders } from '../../shared';
 async function main() {
     try {
         const params = {
-            chainId: '195', // Ton Chain ID
+            chainId: '195', // Tron Chain ID
             amount: '10000000000',
             fromTokenAddress: 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb', // TRON
             toTokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t', // USDT

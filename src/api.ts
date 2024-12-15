@@ -17,8 +17,8 @@ export class OkxApi {
 
         try {
             const url = `${CONFIG.BASE_URL}${requestPath}${queryString}`;
-            console.log('Request URL:', url);
-            console.log('Request Headers:', headers);
+            // console.log('Request URL:', url);
+            // console.log('Request Headers:', headers);
 
             const response = await fetch(url, {
                 method,

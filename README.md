@@ -9,11 +9,17 @@ A comprehensive collection of TypeScript scripts for interacting with OKX DEX AP
 npm install
 ```
 
-2. Create `.env` file:
+2. Obtain your project ID, API key, secret key, and passphrase from OKX Developer Portal:
+https://www.okx.com/web3/build/docs/waas/introduction-to-developer-portal-interface
+
+3. Obtain Solana RPC provider API key:
+https://www.helius.dev/
+
+4. Create `.env` file:
 ```env
 REACT_APP_PROJECT_ID=YOUR_PROJECT_ID
 REACT_APP_API_KEY=YOUR_API_KEY
-REACT_APP_SECRET_KEY=YOUR_AP_SECRET_KEY
+REACT_APP_SECRET_KEY=YOUR_API_SECRET_KEY
 REACT_APP_API_PASSPHRASE=YOUR_API_PASSPHRASE
 USER_ADDRESS=YOUR_WALLET_ADDRESS
 PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY

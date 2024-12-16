@@ -5,6 +5,8 @@ export const CONFIG = {
     CHAIN_IDS: {
         evm: '1',
         solana: '501',
-        sui: '784'
+        sui: '784',
+        ton: '607',
+        tron: '195'
     } as const
 };

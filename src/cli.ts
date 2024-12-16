@@ -217,6 +217,13 @@ program
                     params.toTokenAddress = options.to || 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
                     break;
 
+                case 'tron':
+                    params.chainId = '195';
+                    params.amount = options.amount || '10000000000';
+                    params.fromTokenAddress = options.from || 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
+                    params.toTokenAddress = options.to || 'TMwFHYXLJaRUPeW6421aqXL4ZEzPRFGkGT';
+                    break;
+
                 default:
                     throw new Error('Unsupported chain. Use evm, solana, or sui');
             }

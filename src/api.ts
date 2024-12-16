@@ -77,8 +77,15 @@ export class OkxApi {
                 params.fromTokenAddress = '0x2::sui::SUI';
                 params.toTokenAddress = '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC';
                 break;
+            case 'ton':
+                params.fromTokenAddress = 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c';
+                params.toTokenAddress = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
+                break;
+            case 'tron':
+                params.fromTokenAddress = 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
+                params.toTokenAddress = 'TMwFHYXLJaRUPeW6421aqXL4ZEzPRFGkGT';
+                break;
         }
-
         return this.getSwapQuote(params);
     }
 

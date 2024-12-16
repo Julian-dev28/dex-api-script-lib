@@ -1,5 +1,7 @@
+import { toNamespacedPath } from "path";
+
 // types.ts
-export type Chain = 'solana' | 'evm' | 'sui';
+export type Chain = 'solana' | 'evm' | 'sui' | 'ton' | 'tron';
 
 export interface ApiResponse<T> {
     code: string;
@@ -40,6 +42,8 @@ export const CONFIG = {
     CHAIN_IDS: {
         evm: '1',
         solana: '501',
-        sui: '784'
+        sui: '784',
+        ton: '607',
+        tron: '195'
     } as const
 };

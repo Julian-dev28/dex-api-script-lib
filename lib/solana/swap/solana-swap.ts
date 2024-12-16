@@ -6,64 +6,21 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-// Types
-interface SwapQuoteParams {
-    chainId: string;
-    amount: string;
-    fromTokenAddress: string;
-    toTokenAddress: string;
-    userWalletAddress: string;
-    slippage: string;
-}
-
-interface SwapResponse {
-    code: string;
-    data: SwapData[];
-    msg?: string;
-}
-
-interface SwapData {
-    routerResult: {
-        toTokenAmount: string;
-    };
-    tx: {
-        data: string;
-    };
-}
-
-interface TransactionResult {
-    success: boolean;
-    transactionId: string;
-    explorerUrl: string;
-    confirmation: any;
-}
-
 // Constants
-const COMPUTE_UNITS = 300000;
-const MAX_RETRIES = 3;
-const BASE_URL = 'https://www.okx.com';
-const NATIVE_SOL = "11111111111111111111111111111111";
-const WRAPPED_SOL = "So11111111111111111111111111111111111111112";
-const USDC_SOL = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+const TOKENS = {
+    NATIVE_SOL: "11111111111111111111111111111111",
+    WRAPPED_SOL: "So11111111111111111111111111111111111111112",
+    USDC: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+} as const;
 
-// Validate environment variables
-const requiredEnvVars = [
-    'HELIUS_API_KEY',
-    'PRIVATE_KEY',
-    'USER_ADDRESS',
-    'REACT_APP_API_KEY',
-    'REACT_APP_SECRET_KEY',
-    'REACT_APP_API_PASSPHRASE',
-    'REACT_APP_PROJECT_ID'
-] as const;
+const CONFIG = {
+    MAX_RETRIES: 8,
+    BASE_URL: 'https://www.okx.com',
+    CHAIN_ID: '501',
+    SLIPPAGE: '0.05'
+} as const;
 
-for (const envVar of requiredEnvVars) {
-    if (!process.env[envVar]) {
-        throw new Error(`Missing required environment variable: ${envVar}`);
-    }
-}
-
-// Initialize Solana connection
+// Initialize connection
 const connection = new Connection(
     `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`,
     {
@@ -72,65 +29,59 @@ const connection = new Connection(
     }
 );
 
-// Utility function to generate API headers
-function generateHeaders(
-    timestamp: string,
-    method: string,
-    requestPath: string,
-    queryString: string = '',
-    apiKey: string,
-    secretKey: string,
-    apiPassphrase: string,
-    projectId: string
-): Record<string, string> {
-    const stringToSign = timestamp + method + requestPath + queryString;
+// Generate OKX API headers
+function getHeaders(timestamp: string, method: string, path: string, query: string = ''): Record<string, string> {
+    const stringToSign = timestamp + method + path + query;
 
     return {
         'Content-Type': 'application/json',
-        'OK-ACCESS-KEY': apiKey,
+        'OK-ACCESS-KEY': process.env.REACT_APP_API_KEY!,
         'OK-ACCESS-SIGN': enc.Base64.stringify(
-            HmacSHA256(stringToSign, secretKey)
+            HmacSHA256(stringToSign, process.env.REACT_APP_SECRET_KEY!)
         ),
         'OK-ACCESS-TIMESTAMP': timestamp,
-        'OK-ACCESS-PASSPHRASE': apiPassphrase,
-        'OK-ACCESS-PROJECT': projectId,
+        'OK-ACCESS-PASSPHRASE': process.env.REACT_APP_API_PASSPHRASE!,
+        'OK-ACCESS-PROJECT': process.env.REACT_APP_PROJECT_ID!
     };
 }
 
-// Get swap quote from OKX
-async function getSwapQuote(
-    params: SwapQuoteParams,
-    apiCredentials: {
-        apiKey: string;
-        secretKey: string;
-        apiPassphrase: string;
-        projectId: string;
+// Add strict parameter interface
+interface SwapParams {
+    chainId: string;
+    amount: string;
+    fromTokenAddress: string;
+    toTokenAddress: string;
+    userWalletAddress: string;
+    slippage: string;
+}
+
+// Updated getSwapQuote function with proper type checking
+async function getSwapQuote(amount: string, fromToken: string, toToken: string) {
+    if (!process.env.USER_ADDRESS) {
+        throw new Error('USER_ADDRESS is required');
     }
-): Promise<SwapData> {
+
+    const params: SwapParams = {
+        chainId: CONFIG.CHAIN_ID,
+        amount,
+        fromTokenAddress: fromToken,
+        toTokenAddress: toToken,
+        userWalletAddress: process.env.USER_ADDRESS,
+        slippage: CONFIG.SLIPPAGE
+    };
+
     const timestamp = new Date().toISOString();
-    const requestPath = '/api/v5/dex/aggregator/swap';
-    const queryString = '?' + new URLSearchParams(Object.fromEntries(
-        Object.entries(params).map(([key, value]) => [key, String(value)])
-    )).toString();
+    const path = '/api/v5/dex/aggregator/swap';
+    const query = '?' + new URLSearchParams(
+        Object.entries(params).map(([key, value]) => [key, value.toString()])
+    ).toString();
 
-    const headers = generateHeaders(
-        timestamp,
-        'GET',
-        requestPath,
-        queryString,
-        apiCredentials.apiKey,
-        apiCredentials.secretKey,
-        apiCredentials.apiPassphrase,
-        apiCredentials.projectId
-    );
-
-    const response = await fetch(`${BASE_URL}${requestPath}${queryString}`, {
+    const response = await fetch(`${CONFIG.BASE_URL}${path}${query}`, {
         method: 'GET',
-        headers,
+        headers: getHeaders(timestamp, 'GET', path, query)
     });
 
-    const data = await response.json() as SwapResponse;
-
+    const data = await response.json();
     if (data.code !== '0' || !data.data?.[0]) {
         throw new Error(`API Error: ${data.msg || 'Unknown error'}`);
     }
@@ -138,55 +89,41 @@ async function getSwapQuote(
     return data.data[0];
 }
 
-// Execute the swap transaction
-async function executeSwapTransaction(
-    txData: SwapData,
-    privateKey: string
-): Promise<TransactionResult> {
+interface TransactionResult {
+    txId: string;
+    confirmation: any;
+}
+
+async function executeTransaction(txData: string, privateKey: string): Promise<TransactionResult> {
     let retryCount = 0;
 
-    while (retryCount < MAX_RETRIES) {
+    while (retryCount < CONFIG.MAX_RETRIES) {
         try {
-            const transactionData = txData.tx?.data;
-            if (!transactionData) {
-                throw new Error('Invalid transaction data');
-            }
-
             const recentBlockHash = await connection.getLatestBlockhash();
-            const decodedTransaction = base58.decode(transactionData);
+            const decodedTransaction = base58.decode(txData);
             let tx: Transaction | VersionedTransaction;
 
-            // Try to create versioned transaction first
             try {
                 tx = VersionedTransaction.deserialize(decodedTransaction);
                 (tx as VersionedTransaction).message.recentBlockhash = recentBlockHash.blockhash;
-            } catch (e) {
-                // Fall back to legacy transaction
+            } catch {
                 tx = Transaction.from(decodedTransaction);
                 (tx as Transaction).recentBlockhash = recentBlockHash.blockhash;
             }
 
-            // Add compute budget instruction
-            const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
-                units: COMPUTE_UNITS
-            });
-
             const feePayer = Keypair.fromSecretKey(base58.decode(privateKey));
 
-            // Sign the transaction
             if (tx instanceof VersionedTransaction) {
                 tx.sign([feePayer]);
             } else {
                 tx.partialSign(feePayer);
             }
 
-            // Send the transaction
             const txId = await connection.sendRawTransaction(tx.serialize(), {
                 skipPreflight: false,
                 maxRetries: 5
             });
 
-            // Wait for confirmation
             const confirmation = await connection.confirmTransaction({
                 signature: txId,
                 blockhash: recentBlockHash.blockhash,
@@ -197,87 +134,73 @@ async function executeSwapTransaction(
                 throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
             }
 
+            // Always return a defined TransactionResult
             return {
-                success: true,
-                transactionId: txId,
-                explorerUrl: `https://solscan.io/tx/${txId}`,
+                txId,
                 confirmation
             };
+
         } catch (error) {
             console.error(`Attempt ${retryCount + 1} failed:`, error);
             retryCount++;
 
-            if (retryCount === MAX_RETRIES) {
-                throw error;
+            if (retryCount === CONFIG.MAX_RETRIES) {
+                throw error; // This will prevent undefined return
             }
 
             await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
         }
     }
 
+    // This throw ensures the function never returns undefined
     throw new Error('Max retries exceeded');
 }
 
-// Main function to execute a swap
-async function executeSwap(
-    amount: string,
-    fromToken: string,
-    toToken: string,
-    userAddress: string,
-    privateKey: string,
-    apiCredentials: {
-        apiKey: string;
-        secretKey: string;
-        apiPassphrase: string;
-        projectId: string;
-    }
-): Promise<TransactionResult> {
-    // Prepare swap parameters
-    const swapParams: SwapQuoteParams = {
-        chainId: '501', // Solana chain ID
-        amount,
-        fromTokenAddress: fromToken,
-        toTokenAddress: toToken,
-        userWalletAddress: userAddress,
-        slippage: '0.05',
-    };
+// Update the swap function to handle the result properly
+async function swap(amount: string, fromToken: string, toToken: string): Promise<string> {
+    console.log(`Starting swap: ${amount} ${fromToken} → ${toToken}`);
 
-    // Get swap quote
-    const swapData = await getSwapQuote(swapParams, apiCredentials);
+    const quote = await getSwapQuote(amount, fromToken, toToken);
+    console.log(`Got quote: ${quote.routerResult.toTokenAmount} output tokens`);
 
-    // Execute the transaction
-    return await executeSwapTransaction(swapData, privateKey);
+    // executeTransaction now guarantees a defined result
+    const result = await executeTransaction(quote.tx.data, process.env.PRIVATE_KEY!);
+    console.log(`Swap successful! 🎉`);
+    console.log(`Transaction: https://solscan.io/tx/${result.txId}`);
+
+    return result.txId;
 }
 
-// Main execution
+// Execute swap
 async function main() {
     try {
-        console.log('Starting swap execution...');
+        // Required environment variables check
+        const required = [
+            'HELIUS_API_KEY',
+            'PRIVATE_KEY',
+            'USER_ADDRESS',
+            'REACT_APP_API_KEY',
+            'REACT_APP_SECRET_KEY',
+            'REACT_APP_API_PASSPHRASE',
+            'REACT_APP_PROJECT_ID'
+        ];
 
-        const result = await executeSwap(
-            '1000000', // amount in lamports (1 SOL = 1e9 lamports)
-            NATIVE_SOL, // from token (Native SOL)
-            WRAPPED_SOL, // to token (Wrapped SOL)
-            process.env.USER_ADDRESS!,
-            process.env.PRIVATE_KEY!,
-            {
-                apiKey: process.env.REACT_APP_API_KEY!,
-                secretKey: process.env.REACT_APP_SECRET_KEY!,
-                apiPassphrase: process.env.REACT_APP_API_PASSPHRASE!,
-                projectId: process.env.REACT_APP_PROJECT_ID!
-            }
+        for (const env of required) {
+            if (!process.env[env]) throw new Error(`Missing ${env}`);
+        }
+
+        // Execute swap (1 SOL = 1e9 lamports)
+        await swap(
+            '10000000',           // .001 SOL
+            TOKENS.NATIVE_SOL,      // From Native SOL
+            TOKENS.WRAPPED_SOL      // To Wrapped SOL
         );
-
-        console.log('Swap completed successfully!');
-        console.log('Transaction ID:', result.transactionId);
-        console.log('Explorer URL:', result.explorerUrl);
     } catch (error) {
         console.error('Swap failed:', error);
         process.exit(1);
     }
 }
 
-// Run the script
 if (require.main === module) {
     main().catch(console.error);
 }

@@ -1,4 +1,4 @@
-// scripts/ton-quote.ts
+// scripts/tron-quote.ts
 import { getHeaders } from '../../shared';
 
 async function main() {
@@ -16,7 +16,7 @@ async function main() {
         const queryString = "?" + new URLSearchParams(params).toString();
         const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 
-        console.log('Getting Ton quote...');
+        console.log('Getting Tron quote...');
         const response = await fetch(`https://www.okx.com${requestPath}${queryString}`, {
             method: "GET",
             headers

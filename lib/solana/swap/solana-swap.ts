@@ -1,10 +1,26 @@
-import { Connection, Transaction, VersionedTransaction, Keypair, ComputeBudgetProgram } from '@solana/web3.js';
+import { Connection, Transaction, VersionedTransaction, Keypair } from '@solana/web3.js';
 import base58 from 'bs58';
 import { HmacSHA256 } from 'crypto-js';
 import { enc } from 'crypto-js';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
+
+// tx result interface
+interface TransactionResult {
+    txId: string;
+    confirmation: any;
+}
+
+// swap parameter interface
+interface SwapParams {
+    chainId: string;
+    amount: string;
+    fromTokenAddress: string;
+    toTokenAddress: string;
+    userWalletAddress: string;
+    slippage: string;
+}
 
 // Constants
 const TOKENS = {
@@ -45,15 +61,7 @@ function getHeaders(timestamp: string, method: string, path: string, query: stri
     };
 }
 
-// Add strict parameter interface
-interface SwapParams {
-    chainId: string;
-    amount: string;
-    fromTokenAddress: string;
-    toTokenAddress: string;
-    userWalletAddress: string;
-    slippage: string;
-}
+
 
 // Updated getSwapQuote function with proper type checking
 async function getSwapQuote(amount: string, fromToken: string, toToken: string) {
@@ -89,10 +97,7 @@ async function getSwapQuote(amount: string, fromToken: string, toToken: string) 
     return data.data[0];
 }
 
-interface TransactionResult {
-    txId: string;
-    confirmation: any;
-}
+
 
 async function executeTransaction(txData: string, privateKey: string): Promise<TransactionResult> {
     let retryCount = 0;

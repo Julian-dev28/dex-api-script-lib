@@ -12,7 +12,7 @@ async function main() {
         const queryString = "?" + new URLSearchParams(params).toString();
         const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 
-        console.log('Getting bridge token pairs for Ton...');
+        console.log('Getting bridge token pairs for Tron...');
         const response = await fetch(`https://www.okx.com${requestPath}${queryString}`, {
             method: "GET",
             headers

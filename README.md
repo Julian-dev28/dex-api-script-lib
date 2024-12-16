@@ -62,6 +62,7 @@ The utility generates the required authentication headers for OKX API:
 - `OK-ACCESS-PROJECT`: Your project ID
 
 ### Usage
+
 ```typescript
 const timestamp = new Date().toISOString();
 const swapAPIrequestPath = "/api/v5/dex/aggregator/quote";
@@ -74,7 +75,7 @@ const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 
 ### Run All Commands
 ```bash
-npm run get-all    # Run all scripts for Solana, EVM, and SUI
+npm run get-all    # Run all scripts for EVM, Solana, Sui, Ton, and Tron
 ```
 
 ### Solana Commands
@@ -132,6 +133,8 @@ Run the following commands in your terminal to get swap quotes for EVM, Solana, 
 npm run cli -- quote evm
 npm run cli -- quote solana
 npm run cli -- quote sui
+npm run cli -- quote ton
+npm run cli -- quote tron
 
 # Custom amounts
 npm run cli -- quote evm -a 2000000000000000000
@@ -176,6 +179,15 @@ lib/
 ### SUI (Chain ID: '784')
 - Native SUI: '0x2::sui::SUI'
 - USDC: '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC'
+
+### TON (Chain ID: '607')
+- Native Ton: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c'
+- USDC: 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs'
+
+### TRON (Chain ID: '195')
+- Native Tron: 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb'
+- USDT: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+
 
 ## Security Notes
 - Keep your .env file secure and never commit it to version control

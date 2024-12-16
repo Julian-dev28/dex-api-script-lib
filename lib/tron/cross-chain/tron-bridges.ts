@@ -9,7 +9,7 @@ async function main() {
         const queryString = chainId ? `?chainId=${chainId}` : '';
         const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 
-        console.log('Getting supported bridges for Ton...');
+        console.log('Getting supported bridges for Tron...');
         const response = await fetch(`https://www.okx.com${requestPath}${queryString}`, {
             method: "GET",
             headers

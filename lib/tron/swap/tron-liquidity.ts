@@ -13,7 +13,7 @@ async function main() {
         const queryString = "?" + new URLSearchParams(params).toString();
         const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 
-        console.log('Getting Ton liquidity sources...');
+        console.log('Getting Tron liquidity sources...');
         const response = await fetch(`https://www.okx.com${requestPath}${queryString}`, {
             method: "GET",
             headers

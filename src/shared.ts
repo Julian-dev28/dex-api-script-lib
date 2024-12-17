@@ -12,10 +12,10 @@ export function getHeaders(
     requestPath: string,
     queryString = ""
 ): HeadersConfig {
-    const apiKey = process.env.REACT_APP_API_KEY;
-    const secretKey = process.env.REACT_APP_SECRET_KEY;
-    const apiPassphrase = process.env.REACT_APP_API_PASSPHRASE;
-    const projectId = process.env.REACT_APP_PROJECT_ID;
+    const apiKey = process.env.OKX_API_KEY;
+    const secretKey = process.env.OKX_SECRET_KEY;
+    const apiPassphrase = process.env.OKX_API_PASSPHRASE;
+    const projectId = process.env.OKX_PROJECT_ID;
 
     if (!apiKey || !secretKey || !apiPassphrase || !projectId) {
         throw new Error("Missing required environment variables");

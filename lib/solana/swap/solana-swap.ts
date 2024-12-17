@@ -51,13 +51,13 @@ function getHeaders(timestamp: string, method: string, path: string, query: stri
 
     return {
         'Content-Type': 'application/json',
-        'OK-ACCESS-KEY': process.env.REACT_APP_API_KEY!,
+        'OK-ACCESS-KEY': process.env.OKX_API_KEY!,
         'OK-ACCESS-SIGN': enc.Base64.stringify(
-            HmacSHA256(stringToSign, process.env.REACT_APP_SECRET_KEY!)
+            HmacSHA256(stringToSign, process.env.OKX_SECRET_KEY!)
         ),
         'OK-ACCESS-TIMESTAMP': timestamp,
-        'OK-ACCESS-PASSPHRASE': process.env.REACT_APP_API_PASSPHRASE!,
-        'OK-ACCESS-PROJECT': process.env.REACT_APP_PROJECT_ID!
+        'OK-ACCESS-PASSPHRASE': process.env.OKX_API_PASSPHRASE!,
+        'OK-ACCESS-PROJECT': process.env.OKX_PROJECT_ID!
     };
 }
 
@@ -184,10 +184,10 @@ async function main() {
             'HELIUS_API_KEY',
             'PRIVATE_KEY',
             'USER_ADDRESS',
-            'REACT_APP_API_KEY',
-            'REACT_APP_SECRET_KEY',
-            'REACT_APP_API_PASSPHRASE',
-            'REACT_APP_PROJECT_ID'
+            'OKX_API_KEY',
+            'OKX_SECRET_KEY',
+            'OKX_API_PASSPHRASE',
+            'OKX_PROJECT_ID'
         ];
 
         for (const env of required) {

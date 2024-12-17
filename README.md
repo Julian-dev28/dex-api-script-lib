@@ -17,10 +17,10 @@ https://www.helius.dev/
 
 4. Create `.env` file:
 ```env
-REACT_APP_PROJECT_ID=YOUR_PROJECT_ID
-REACT_APP_API_KEY=YOUR_API_KEY
-REACT_APP_SECRET_KEY=YOUR_API_SECRET_KEY
-REACT_APP_API_PASSPHRASE=YOUR_API_PASSPHRASE
+OKX_PROJECT_ID=YOUR_PROJECT_ID
+OKX_API_KEY=YOUR_API_KEY
+OKX_SECRET_KEY=YOUR_API_SECRET_KEY
+OKX_API_PASSPHRASE=YOUR_API_PASSPHRASE
 USER_ADDRESS=YOUR_WALLET_ADDRESS
 PRIVATE_KEY=YOUR_WALLET_PRIVATE_KEY
 HELIUS_API_KEY=YOUR_HELIUS_API_KEY
@@ -38,10 +38,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export function getHeaders(timestamp: string, method: string, requestPath: string, queryString = "") {
-    const apiKey = process.env.REACT_APP_API_KEY;
-    const secretKey = process.env.REACT_APP_SECRET_KEY;
-    const apiPassphrase = process.env.REACT_APP_API_PASSPHRASE;
-    const projectId = process.env.REACT_APP_PROJECT_ID;
+    const apiKey = process.env.OKX_API_KEY;
+    const secretKey = process.env.OKX_SECRET_KEY;
+    const apiPassphrase = process.env.OKX_API_PASSPHRASE;
+    const projectId = process.env.OKX_PROJECT_ID;
 
     if (!apiKey || !secretKey || !apiPassphrase || !projectId) {
         throw new Error("Missing required environment variables");

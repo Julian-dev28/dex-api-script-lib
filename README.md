@@ -209,6 +209,7 @@ All scripts include error handling and logging. Check console output for detaile
 ## Dependencies
 - crypto-js: ^4.2.0
 - dotenv: ^16.4.7
+- ts-node: latest
 - TypeScript and related dev dependencies
 
 ## License

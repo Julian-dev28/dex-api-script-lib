@@ -191,7 +191,7 @@ program
             switch (chain.toLowerCase()) {
                 case 'evm':
                     params.chainId = '1';
-                    params.amount = options.amount || '1000000000000000000';
+                    params.amount = options.amount || '10000000000000000000';
                     params.fromTokenAddress = options.from || '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
                     params.toTokenAddress = options.to || '0xdAC17F958D2ee523a2206206994597C13D831ec7';
                     break;

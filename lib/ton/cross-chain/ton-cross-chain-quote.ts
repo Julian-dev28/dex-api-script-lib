@@ -7,7 +7,7 @@ async function main() {
             fromChainId: '607', // Ton Chain ID
             toChainId: '1',    // To Ethereum
             amount: '10000000000',
-            fromTokenAddress: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c', // Wrapped SOL
+            fromTokenAddress: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c', // Native TON
             toTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on Ethereum
             slippage: '0.025', // 2.5% slippage for cross-chain swaps
             sort: '1',         // Optimal route considering all factors
@@ -18,7 +18,7 @@ async function main() {
         const queryString = "?" + new URLSearchParams(params).toString();
         const headers = getHeaders(timestamp, "GET", requestPath, queryString);
 
-        console.log('Getting Ton to Ton cross-chain quote...');
+        console.log('Getting Ton to EVM cross-chain quote...');
         const response = await fetch(`https://www.okx.com${requestPath}${queryString}`, {
             method: "GET",
             headers

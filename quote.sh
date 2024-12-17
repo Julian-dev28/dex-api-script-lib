@@ -33,6 +33,9 @@ case "$1" in
     ton)
         npm run cli -- quote ton
         ;;
+    tron)
+        npm run cli -- quote tron
+        ;;
     -h|--help)
         show_help
         ;;

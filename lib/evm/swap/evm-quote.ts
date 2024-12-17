@@ -6,7 +6,7 @@ async function main() {
     try {
         const params = {
             chainId: '1', // Ethereum mainnet
-            amount: '1000000000000000000', // 1 ETH
+            amount: '10000000000000000000', // 10 ETH
             fromTokenAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // Native ETH
             toTokenAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
             slippage: '0.1',
